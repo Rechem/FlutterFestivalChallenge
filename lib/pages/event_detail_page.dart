@@ -15,7 +15,8 @@ class EventDetailPage extends StatefulWidget {
   _EventDetailPageState createState() => _EventDetailPageState();
 }
 
-class _EventDetailPageState extends State<EventDetailPage> with TickerProviderStateMixin {
+class _EventDetailPageState extends State<EventDetailPage>
+    with TickerProviderStateMixin {
   late Event event;
   late AnimationController controller;
   late AnimationController bodyScrollAnimationController;
@@ -24,22 +25,26 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
   late Animation<double> appBarSlide;
   double headerImageSize = 0;
   bool isFavorite = false;
+
   @override
   void initState() {
     event = widget.event;
-    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
-    bodyScrollAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
+    bodyScrollAnimationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
     scrollController = ScrollController()
       ..addListener(() {
         if (scrollController.offset >= headerImageSize / 2) {
-          if (!bodyScrollAnimationController.isCompleted) bodyScrollAnimationController.forward();
+          if (!bodyScrollAnimationController.isCompleted)
+            bodyScrollAnimationController.forward();
         } else {
-          if (bodyScrollAnimationController.isCompleted) bodyScrollAnimationController.reverse();
+          if (bodyScrollAnimationController.isCompleted)
+            bodyScrollAnimationController.reverse();
         }
       });
 
-    appBarSlide = Tween(begin: 0, end: 1).animate(
-        CurvedAnimation(
+    appBarSlide = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
       curve: Curves.fastOutSlowIn,
       parent: bodyScrollAnimationController,
     ));
@@ -60,8 +65,6 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-
-
     headerImageSize = MediaQuery.of(context).size.height / 2.5;
     return ScaleTransition(
       scale: scale,
@@ -78,9 +81,7 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
                     buildHeaderImage(),
                     Container(
                       color: null,
-                      decoration: BoxDecoration(
-                        color: null
-                      ),
+                      decoration: const BoxDecoration(color: null),
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +149,8 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
             child: Hero(
               tag: event.image,
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+                borderRadius:
+                    const BorderRadius.vertical(bottom: Radius.circular(32)),
                 child: Image.asset(
                   event.image,
                   fit: BoxFit.cover,
@@ -170,12 +172,14 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
               elevation: 0,
               margin: const EdgeInsets.all(0),
               child: InkWell(
                 onTap: () {
-                  if (bodyScrollAnimationController.isCompleted) bodyScrollAnimationController.reverse();
+                  if (bodyScrollAnimationController.isCompleted)
+                    bodyScrollAnimationController.reverse();
                   Navigator.of(context).pop();
                 },
                 child: Padding(
@@ -188,12 +192,21 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
               ),
               color: hasTitle ? Theme.of(context).primaryColor : Colors.white,
             ),
-            if (hasTitle) Text(event.name, style: titleStyle.copyWith(color: Colors.white)),
+            if (hasTitle)
+              Text(event.name, style: titleStyle.copyWith(color: Colors.white)),
             Card(
               shape: const CircleBorder(),
               elevation: 0,
-              child: // build this widget ,
-              color: Theme.of(context).primaryColor,
+              color: hasTitle ? Theme.of(context).primaryColor : Colors.white,
+              child: IconButton(
+                  onPressed: () => {
+                        setState(() {
+                          isFavorite = !isFavorite;
+                        })
+                      },
+                  icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_outline),
+                  color: hasTitle ? primaryLight : Colors.black),
             ),
           ],
         ),
@@ -221,7 +234,8 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(DateTimeUtils.getMonth(event.eventDate), style: monthStyle),
-              Text(DateTimeUtils.getDayOfMonth(event.eventDate), style: titleStyle),
+              Text(DateTimeUtils.getDayOfMonth(event.eventDate),
+                  style: titleStyle),
             ],
           ),
         ),
@@ -230,19 +244,32 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(DateTimeUtils.getDayOfWeek(event.eventDate), style: titleStyle),
+            Text(DateTimeUtils.getDayOfWeek(event.eventDate),
+                style: titleStyle),
             UIHelper.verticalSpace(4),
-            const Text("10:00 - 12:00 PM", style: subtitleStyle),
+            const Text(
+              "10:00 - 12:00 PM",
+              style: subtitleStyle,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
         const Spacer(),
         Container(
           padding: const EdgeInsets.all(2),
-          decoration: const ShapeDecoration(shape: StadiumBorder(), color: primaryLight),
+          decoration: ShapeDecoration(
+              shape: const StadiumBorder(),
+              color: primaryLight
+              ),
           child: Row(
             children: <Widget>[
               UIHelper.horizontalSpace(8),
-              Text("Add To Calendar", style: subtitleStyle.copyWith(color: Theme.of(context).primaryColor)),
+              Text(
+                "Add To Calendar",
+                style: subtitleStyle.copyWith(
+                    color: Theme.of(context).primaryColor),
+                overflow: TextOverflow.ellipsis,
+              ),
               FloatingActionButton(
                 mini: true,
                 onPressed: () {},
@@ -266,7 +293,9 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
         InkWell(
           child: Text(
             "Read more...",
-            style: TextStyle(color: Theme.of(context).primaryColor, decoration: TextDecoration.underline),
+            style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                decoration: TextDecoration.underline),
           ),
           onTap: () {},
         ),
@@ -291,7 +320,8 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
         ),
         const Spacer(),
         TextButton(
-          child: Text("Follow", style: TextStyle(color: Theme.of(context).primaryColor)),
+          child: Text("Follow",
+              style: TextStyle(color: Theme.of(context).primaryColor)),
           onPressed: () {},
           style: TextButton.styleFrom(
             shape: const StadiumBorder(),
@@ -305,7 +335,7 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
   Widget buildEventLocation() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
-      child: Image.network(
+      child: Image.asset(
         'assets/map.jpg',
         height: MediaQuery.of(context).size.height / 3,
         fit: BoxFit.cover,
@@ -330,8 +360,12 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
                 text: TextSpan(
                   children: [
                     TextSpan(
-                        text: "\$${event.price}", style: titleStyle.copyWith(color: Theme.of(context).primaryColor)),
-                    const TextSpan(text: "/per person", style: TextStyle(color: Colors.black)),
+                        text: "\$${event.price}",
+                        style: titleStyle.copyWith(
+                            color: Theme.of(context).primaryColor)),
+                    const TextSpan(
+                        text: "/per person",
+                        style: TextStyle(color: Colors.black)),
                   ],
                 ),
               ),
@@ -347,7 +381,8 @@ class _EventDetailPageState extends State<EventDetailPage> with TickerProviderSt
             onPressed: () {},
             child: Text(
               "Get a Ticket",
-              style: titleStyle.copyWith(color: Colors.white, fontWeight: FontWeight.normal),
+              style: titleStyle.copyWith(
+                  color: Colors.white, fontWeight: FontWeight.normal),
             ),
           ),
         ],

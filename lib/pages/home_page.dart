@@ -22,11 +22,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   int _currentIndex = 0;
 
-  late ScrollController scrollController;
+  final ScrollController scrollController = ScrollController();
   late AnimationController controller;
   late AnimationController opacityController;
   late Animation<double> opacity;
-
   void viewEventDetail(Event event) {
     Navigator.of(context).push(
       PageRouteBuilder(
@@ -45,18 +44,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-
-
-    controller = AnimationController(vsync: this, duration: const Duration(seconds: 1))..forward();
-    opacityController = AnimationController(vsync: this, duration: const Duration(microseconds: 1));
-    opacity = Tween(begin: 1, end: 0).animate(CurvedAnimation(
+    controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1))
+          ..forward();
+    opacityController = AnimationController(
+        vsync: this, duration: const Duration(microseconds: 1));
+    opacity = Tween<double>(begin: 1, end: 0).animate(CurvedAnimation(
       curve: Curves.linear,
       parent: opacityController,
     ));
     scrollController.addListener(() {
       opacityController.value = offsetToOpacity(
-          currentOffset: scrollController.offset, maxOffset: scrollController.position.maxScrollExtent / 2);
+          currentOffset: scrollController.offset,
+          maxOffset: scrollController.position.maxScrollExtent / 2);
     });
+
     super.initState();
   }
 
@@ -70,13 +72,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    showDialog(
+    Future.delayed(Duration.zero, (() => {
+      showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Alert Dialog"),
           );
-        });
+        })
+    }));
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -117,10 +121,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: "Search...",
-          hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),
-          border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          hintStyle: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),
+          border:
+              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          enabledBorder:
+              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          focusedBorder:
+              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
         ),
       ),
     );
@@ -132,7 +140,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("Upcoming Events", style: headerStyle.copyWith(color: Colors.white)),
+          Text("Upcoming Events",
+              style: headerStyle.copyWith(color: Colors.white)),
           UIHelper.verticalSpace(16),
           SizedBox(
             height: 250,
@@ -142,7 +151,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 final event = upcomingEvents[index];
-                return UpComingEventCard(event: event, onTap: () => viewEventDetail(event));
+                return UpComingEventCard(event: event, onTap: () =>
+                    viewEventDetail(event)
+                    );
               },
             ),
           ),
@@ -179,17 +190,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               var animation = Tween<double>(begin: 800.0, end: 0.0).animate(
                 CurvedAnimation(
                   parent: controller,
-                  curve: Interval((1 / nearbyEvents.length) * index, 1.0, curve: Curves.decelerate),
+                  curve: Interval((1 / nearbyEvents.length) * index, 1.0,
+                      curve: Curves.decelerate),
                 ),
               );
               return AnimatedBuilder(
                 animation: animation,
                 builder: (context, child) => Transform.translate(
                   offset: Offset(animation.value, 0.0),
-                  child: NearbyEventCard(
-                    event: event,
-                    onTap: () => viewEventDetail(event),
-                  ),
+                  child: NearbyEventCard(event: event, onTap: () =>
+                      viewEventDetail(event),
+                      ),
                 ),
               );
             },

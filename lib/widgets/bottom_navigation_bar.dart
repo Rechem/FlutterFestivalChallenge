@@ -23,7 +23,7 @@ class HomePageButtonNavigationBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           label: "Ticket",
-          icon: Icon(FontAwesomeIcons.ticketAlt),
+          icon: Icon(FontAwesomeIcons.ticketSimple),
         ),
         BottomNavigationBarItem(
           label: "User",

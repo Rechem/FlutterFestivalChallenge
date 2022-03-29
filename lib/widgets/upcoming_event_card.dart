@@ -35,7 +35,7 @@ class UpComingEventCard extends StatelessWidget {
           width: double.infinity,
           child: Hero(
             tag: event.image,
-            child: Image.network(
+            child: Image.asset(
               event.image,
               fit: BoxFit.cover,
             ),
